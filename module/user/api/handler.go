@@ -10,6 +10,17 @@ import (
 )
 
 // ListUsers ユーザの一覧を取得する
+// @router /users [GET]
+// @summary ユーザの一覧を取得する
+// @description 全てのユーザの一覧を取得する。
+// @tags User,Reference
+// @produce appliction/json
+// @security ApiKeyAuth
+//
+// @param X-API-VERSION header string true "APIバージョンヘッダ"
+//
+// @success 200 {object} api.UsersResponse "正常に処理された場合"
+// @failure 400 {object} api.ErrorResponse "共通ヘッダーなどが設定されていない場合"
 func ListUsers(c echo.Context) error {
 
 	ls := UsersResponse{

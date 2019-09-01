@@ -5,23 +5,23 @@ OpenAPIのドキュメントを構成する上でどうやって設計するか�
 
 ### ユーザ一覧
 ```
-$ curl -H "Authorization:Bearer test" -H "X-API-VERSION:1" http://localhost:8000/users
+$ curl -H "Authorization:Bearer test" -H "X-API-VERSION:1" http://localhost:8000/api/users
 ```
 
 ### ユーザ取得
 ```
-$ curl -H "Authorization:Bearer test" -H "X-API-VERSION:1" http://localhost:8000/users/1
+$ curl -H "Authorization:Bearer test" -H "X-API-VERSION:1" http://localhost:8000/api/users/1
 ```
 
 ### ユーザの登録
 ```
-$ curl -X POST -H "Authorization:Bearer test" -H "X-API-VERSION:1" -H "Content-Type:application/json" -d '{"name":"テスト", "age":"25"}' http://localhost:8000/users
+$ curl -X POST -H "Authorization:Bearer test" -H "X-API-VERSION:1" -H "Content-Type:application/json" -d '{"name":"テスト", "age":"25"}' http://localhost:8000/api/users
 ```
 ### ユーザの更新
 ```
-$ curl -X PUT -H "Authorization:Bearer test" -H "X-API-VERSION:1" -H "Content-Type:application/json" -d '{"name":"テスト", "age":"25"}' http://localhost:8000/users/1
+$ curl -X PUT -H "Authorization:Bearer test" -H "X-API-VERSION:1" -H "Content-Type:application/json" -d '{"name":"テスト", "age":"25"}' http://localhost:8000/api/users/1
 ```
 ### ユーザの削除
 ```
-$ curl -X DELETE -H "Authorization:Bearer test" -H "X-API-VERSION:1" http://localhost:8000/users/1
+$ curl -X DELETE -H "Authorization:Bearer test" -H "X-API-VERSION:1" http://localhost:8000/api/users/1
 ```

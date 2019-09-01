@@ -1,0 +1,130 @@
+{
+    "swagger": "2.0",
+    "info": {
+        "description": "このアプリで試そうと思っていることは下記。\n- ドキュメント自体がどこまで手軽にかけるか\n- 認証周りは動作するか\n- 共通レスポンスなどが簡単にかけるか\n- ドキュメントのバージョン管理がうまくできるか\n- CIによるビルドができるかどうか",
+        "title": "OpenAPIドキュメントのお試し",
+        "contact": {},
+        "license": {},
+        "version": "1.0"
+    },
+    "host": "localhost:8000",
+    "basePath": "/api",
+    "paths": {
+        "/users": {
+            "get": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "description": "全てのユーザの一覧を取得する。",
+                "produces": [
+                    "appliction/json"
+                ],
+                "tags": [
+                    "User",
+                    "Reference"
+                ],
+                "summary": "ユーザの一覧を取得する",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "APIバージョンヘッダ",
+                        "name": "X-API-VERSION",
+                        "in": "header",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "正常に処理された場合",
+                        "schema": {
+                            "type": "object",
+                            "$ref": "#/definitions/api.UsersResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "共通ヘッダーなどが設定されていない場合",
+                        "schema": {
+                            "type": "object",
+                            "$ref": "#/definitions/api.ErrorResponse"
+                        }
+                    }
+                }
+            }
+        }
+    },
+    "definitions": {
+        "api.ErrorResponse": {
+            "type": "object",
+            "properties": {
+                "details": {
+                    "description": "Details 詳細",
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    },
+                    "example": [
+                        "名前は必須です。",
+                        " 年齢は必須です。"
+                    ]
+                },
+                "summary": {
+                    "description": "Summary 概要",
+                    "type": "string",
+                    "example": "入力データに不備があります。"
+                }
+            }
+        },
+        "api.UserResponse": {
+            "type": "object",
+            "properties": {
+                "age": {
+                    "description": "Age 年齢",
+                    "type": "integer",
+                    "example": 24
+                },
+                "id": {
+                    "description": "ID ユーザのID",
+                    "type": "integer",
+                    "example": 1
+                },
+                "name": {
+                    "description": "Name 名前",
+                    "type": "string",
+                    "example": "テスト 太郎"
+                }
+            }
+        },
+        "api.UsersResponse": {
+            "type": "object",
+            "properties": {
+                "count": {
+                    "description": "Count 件数\nデータがない場合は0。",
+                    "type": "integer",
+                    "example": 3
+                },
+                "result": {
+                    "description": "Result 結果のリスト\nデータがない場合は空のリストが返る。",
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/api.UserResponse"
+                    }
+                }
+            }
+        }
+    },
+    "securityDefinitions": {
+        "ApiKeyAuth": {
+            "type": "apiKey",
+            "name": "Authorization",
+            "in": "header"
+        }
+    },
+    "tags": [
+        {
+            "description": "ユーザに関するAPI",
+            "name": "User"
+        }
+    ]
+}

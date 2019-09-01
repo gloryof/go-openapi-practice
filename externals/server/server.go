@@ -8,6 +8,8 @@ import (
 	"github.com/gloryof/go-openapi-practice/module/user/api"
 	"github.com/labstack/echo/v4"
 	"github.com/labstack/echo/v4/middleware"
+
+	echoSwagger "github.com/swaggo/echo-swagger"
 )
 
 // Server サーバを表す構造体
@@ -26,7 +28,6 @@ func NewServer() Server {
 		port: 8000,
 	}
 
-	s.middleware()
 	s.route()
 
 	return s
@@ -38,22 +39,25 @@ func (s *Server) Start() {
 	s.echo.Start(":" + strconv.Itoa(s.port))
 }
 
-// middleware middlewareの設定
-func (s *Server) middleware() {
-
-	s.echo.Use(middleware.KeyAuthWithConfig(authKeyConfig()))
-	s.echo.Use(checkCommonHeader())
-}
-
 // route APIルートの設定
 func (s *Server) route() {
 
-	s.echo.GET("/users", api.ListUsers)
-	s.echo.POST("/users", api.RegisterUser)
+	f := func(c *echoSwagger.Config) {
+		c.URL = "doc.json"
+	}
+	s.echo.GET("/swagger/*", echoSwagger.EchoWrapHandler(f))
 
-	s.echo.GET("/users/:id", api.GetUser)
-	s.echo.PUT("/users/:id", api.UpdatetUser)
-	s.echo.DELETE("/users/:id", api.DeletetUser)
+	g := s.echo.Group("/api")
+
+	g.Use(middleware.KeyAuthWithConfig(authKeyConfig()))
+	g.Use(checkCommonHeader())
+
+	g.GET("/users", api.ListUsers)
+	g.POST("/users", api.RegisterUser)
+
+	g.GET("/users/:id", api.GetUser)
+	g.PUT("/users/:id", api.UpdatetUser)
+	g.DELETE("/users/:id", api.DeletetUser)
 }
 
 // authKeyConfig 認証キーの設定
@@ -81,7 +85,7 @@ func checkCommonHeader() echo.MiddlewareFunc {
 
 			if v == "" {
 				return c.JSON(http.StatusBadRequest, base.ErrorResponse{
-					Summary: "入力データに不備があります",
+					Summary: "入力データに不備があります。",
 					Details: []string{
 						"X-API-VERSIONが設定されていません。",
 					},

@@ -1,0 +1,99 @@
+basePath: /api
+definitions:
+  api.ErrorResponse:
+    properties:
+      details:
+        description: Details 詳細
+        example:
+        - 名前は必須です。
+        - ' 年齢は必須です。'
+        items:
+          type: string
+        type: array
+      summary:
+        description: Summary 概要
+        example: 入力データに不備があります。
+        type: string
+    type: object
+  api.UserResponse:
+    properties:
+      age:
+        description: Age 年齢
+        example: 24
+        type: integer
+      id:
+        description: ID ユーザのID
+        example: 1
+        type: integer
+      name:
+        description: Name 名前
+        example: テスト 太郎
+        type: string
+    type: object
+  api.UsersResponse:
+    properties:
+      count:
+        description: |-
+          Count 件数
+          データがない場合は0。
+        example: 3
+        type: integer
+      result:
+        description: |-
+          Result 結果のリスト
+          データがない場合は空のリストが返る。
+        items:
+          $ref: '#/definitions/api.UserResponse'
+        type: array
+    type: object
+host: localhost:8000
+info:
+  contact: {}
+  description: |-
+    このアプリで試そうと思っていることは下記。
+    - ドキュメント自体がどこまで手軽にかけるか
+    - 認証周りは動作するか
+    - 共通レスポンスなどが簡単にかけるか
+    - ドキュメントのバージョン管理がうまくできるか
+    - CIによるビルドができるかどうか
+  license: {}
+  title: OpenAPIドキュメントのお試し
+  version: "1.0"
+paths:
+  /users:
+    get:
+      description: 全てのユーザの一覧を取得する。
+      parameters:
+      - description: APIバージョンヘッダ
+        in: header
+        name: X-API-VERSION
+        required: true
+        type: string
+      produces:
+      - appliction/json
+      responses:
+        "200":
+          description: 正常に処理された場合
+          schema:
+            $ref: '#/definitions/api.UsersResponse'
+            type: object
+        "400":
+          description: 共通ヘッダーなどが設定されていない場合
+          schema:
+            $ref: '#/definitions/api.ErrorResponse'
+            type: object
+      security:
+      - ApiKeyAuth: []
+      summary: ユーザの一覧を取得する
+      tags:
+      - User
+      - Reference
+securityDefinitions:
+  ApiKeyAuth:
+    in: header
+    name: Authorization
+    type: apiKey
+swagger: "2.0"
+tags:
+- description: ユーザに関するAPI
+  name: User
