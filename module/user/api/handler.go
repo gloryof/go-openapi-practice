@@ -32,45 +32,115 @@ func ListUsers(c echo.Context) error {
 }
 
 // GetUser ユーザを取得する
+// @router /users/{id} [GET]
+// @summary ユーザを取得する
+// @description IDで指定したユーザを取得する。
+// @tags User,Reference
+//
+// @produce appliction/json
+// @security ApiKeyAuth
+//
+// @param X-API-VERSION header string true "APIバージョンヘッダ"
+// @param id path int true "ユーザID"
+//
+// @success 200 {object} api.UsersResponse "正常に処理された場合"
+// @failure 400 {object} api.ErrorResponse "共通ヘッダーなどが設定されていない場合"
+// @failure 404 {object} api.ErrorResponse "データが存在しない場合"
 func GetUser(c echo.Context) error {
 
 	res, err := checkAndFind(c)
-	if err != nil {
+	if !c.Response().Committed {
 
-		return err
+		return c.JSON(http.StatusOK, res)
 	}
 
-	return c.JSON(http.StatusOK, res)
+	return err
 }
 
 // UpdatetUser ユーザを更新する
-// 実際はチェックのみで更新はしなし
+// @router /users/{id} [PUT]
+// @summary ユーザを更新する
+// @description 実際はチェックのみで更新はしない
+//
+// @tags User,Update
+// @produce appliction/json
+// @security ApiKeyAuth
+//
+// @param X-API-VERSION header string true "APIバージョンヘッダ"
+// @param id path int true "ユーザID"
+// @param param body api.UserUpdateRequest true "ユーザ更新リクエスト"
+//
+// @success 200 {object} api.RegisteredResponse "正常に更新できた場合"
+// @failure 400 {object} api.ErrorResponse "共通ヘッダーなどが設定されていない場合"
+// @failure 404 {object} api.ErrorResponse "データが存在しない場合"
 func UpdatetUser(c echo.Context) error {
 
 	_, err := checkAndFind(c)
-	if err != nil {
+	if !c.Response().Committed {
 
-		return err
+		req := UserUpdateRequest{}
+
+		c.Bind(&req)
+
+		msg := validateRequest(req)
+		if 0 < len(msg) {
+
+			return c.JSON(http.StatusBadRequest, api.ErrorResponse{
+				Summary: "入力データに不正がありました。",
+				Details: msg,
+			})
+		}
+
+		return c.JSON(http.StatusOK, RegisteredResponse{
+			ID: 4,
+		})
 	}
 
-	return c.NoContent(http.StatusNoContent)
+	return err
 }
 
 // DeletetUser ユーザを削除する
-// 実際はチェックのみで削除はしなし
+// @router /users/{id} [DELETE]
+// @summary ユーザを削除する
+// @description 実際はチェックのみで削除はしない
+//
+// @tags User,Update
+// @produce appliction/json
+// @security ApiKeyAuth
+//
+// @param X-API-VERSION header string true "APIバージョンヘッダ"
+// @param id path int true "ユーザID"
+//
+// @success 204 "正常に更新できた場合"
+// @failure 400 {object} api.ErrorResponse "共通ヘッダーなどが設定されていない場合"
+// @failure 404 {object} api.ErrorResponse "データが存在しない場合"
 func DeletetUser(c echo.Context) error {
 
 	_, err := checkAndFind(c)
-	if err != nil {
+	if !c.Response().Committed {
 
-		return err
+		return c.NoContent(http.StatusNoContent)
 	}
 
-	return c.NoContent(http.StatusNoContent)
+	return err
 }
 
 // RegisterUser ユーザの登録
-// 実際はチェックのみで登録はしない
+// @router /users/{id} [POST]
+// @summary ユーザを登録する
+// @description 実際はチェックのみで更新はしない
+//
+// @tags User,Update
+// @produce appliction/json
+// @security ApiKeyAuth
+//
+// @param X-API-VERSION header string true "APIバージョンヘッダ"
+// @param id path int true "ユーザID"
+// @param param body api.UserUpdateRequest true "ユーザ更新リクエスト"
+//
+// @success 200 {object} api.RegisteredResponse "正常に更新できた場合"
+// @failure 400 {object} api.ErrorResponse "共通ヘッダーなどが設定されていない場合"
+// @failure 404 {object} api.ErrorResponse "データが存在しない場合"
 func RegisterUser(c echo.Context) error {
 
 	req := UserUpdateRequest{}

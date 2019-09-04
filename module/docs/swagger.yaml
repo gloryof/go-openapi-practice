@@ -15,6 +15,12 @@ definitions:
         example: 入力データに不備があります。
         type: string
     type: object
+  api.RegisteredResponse:
+    properties:
+      id:
+        example: 1
+        type: integer
+    type: object
   api.UserResponse:
     properties:
       age:
@@ -28,6 +34,18 @@ definitions:
       name:
         description: Name 名前
         example: テスト 太郎
+        type: string
+    type: object
+  api.UserUpdateRequest:
+    properties:
+      age:
+        description: Age 年齢
+        example: "24"
+        type: string
+      name:
+        description: Name 名前
+        example: テスト 太郎
+        maxLength: 30
         type: string
     type: object
   api.UsersResponse:
@@ -88,6 +106,166 @@ paths:
       tags:
       - User
       - Reference
+  /users/{id}:
+    delete:
+      description: 実際はチェックのみで削除はしない
+      parameters:
+      - description: APIバージョンヘッダ
+        in: header
+        name: X-API-VERSION
+        required: true
+        type: string
+      - description: ユーザID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - appliction/json
+      responses:
+        "204":
+          description: 正常に更新できた場合
+        "400":
+          description: 共通ヘッダーなどが設定されていない場合
+          schema:
+            $ref: '#/definitions/api.ErrorResponse'
+            type: object
+        "404":
+          description: データが存在しない場合
+          schema:
+            $ref: '#/definitions/api.ErrorResponse'
+            type: object
+      security:
+      - ApiKeyAuth: []
+      summary: ユーザを削除する
+      tags:
+      - User
+      - Update
+    get:
+      description: IDで指定したユーザを取得する。
+      parameters:
+      - description: APIバージョンヘッダ
+        in: header
+        name: X-API-VERSION
+        required: true
+        type: string
+      - description: ユーザID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - appliction/json
+      responses:
+        "200":
+          description: 正常に処理された場合
+          schema:
+            $ref: '#/definitions/api.UsersResponse'
+            type: object
+        "400":
+          description: 共通ヘッダーなどが設定されていない場合
+          schema:
+            $ref: '#/definitions/api.ErrorResponse'
+            type: object
+        "404":
+          description: データが存在しない場合
+          schema:
+            $ref: '#/definitions/api.ErrorResponse'
+            type: object
+      security:
+      - ApiKeyAuth: []
+      summary: ユーザを取得する
+      tags:
+      - User
+      - Reference
+    post:
+      description: 実際はチェックのみで更新はしない
+      parameters:
+      - description: APIバージョンヘッダ
+        in: header
+        name: X-API-VERSION
+        required: true
+        type: string
+      - description: ユーザID
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: ユーザ更新リクエスト
+        in: body
+        name: param
+        required: true
+        schema:
+          $ref: '#/definitions/api.UserUpdateRequest'
+          type: object
+      produces:
+      - appliction/json
+      responses:
+        "200":
+          description: 正常に更新できた場合
+          schema:
+            $ref: '#/definitions/api.RegisteredResponse'
+            type: object
+        "400":
+          description: 共通ヘッダーなどが設定されていない場合
+          schema:
+            $ref: '#/definitions/api.ErrorResponse'
+            type: object
+        "404":
+          description: データが存在しない場合
+          schema:
+            $ref: '#/definitions/api.ErrorResponse'
+            type: object
+      security:
+      - ApiKeyAuth: []
+      summary: ユーザを登録する
+      tags:
+      - User
+      - Update
+    put:
+      description: 実際はチェックのみで更新はしない
+      parameters:
+      - description: APIバージョンヘッダ
+        in: header
+        name: X-API-VERSION
+        required: true
+        type: string
+      - description: ユーザID
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: ユーザ更新リクエスト
+        in: body
+        name: param
+        required: true
+        schema:
+          $ref: '#/definitions/api.UserUpdateRequest'
+          type: object
+      produces:
+      - appliction/json
+      responses:
+        "200":
+          description: 正常に更新できた場合
+          schema:
+            $ref: '#/definitions/api.RegisteredResponse'
+            type: object
+        "400":
+          description: 共通ヘッダーなどが設定されていない場合
+          schema:
+            $ref: '#/definitions/api.ErrorResponse'
+            type: object
+        "404":
+          description: データが存在しない場合
+          schema:
+            $ref: '#/definitions/api.ErrorResponse'
+            type: object
+      security:
+      - ApiKeyAuth: []
+      summary: ユーザを更新する
+      tags:
+      - User
+      - Update
 securityDefinitions:
   ApiKeyAuth:
     in: header
